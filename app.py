@@ -1,4 +1,5 @@
 import os
+from results.amizone import getAttendance
 from flask import Flask, request, jsonify
 import telegram
 
@@ -6,6 +7,13 @@ app = Flask(__name__)
 TOKEN = os.environ.get('TOKEN')
 
 bot = telegram.Bot(token=TOKEN)
+
+defaultMessage = ''' 
+Hi, I'm monday
+Here are my commands:
+/attendance - to list all the attendance of all subjects
+/today - to show today's classes and their attendance
+'''
 
 @app.route('/')
 def default():
@@ -16,7 +24,15 @@ def respond():
     update = telegram.Update.de_json(request.get_json(),bot)
     chatID = update.message.chat.id
 
-    bot.sendMessage(chat_id=chatID, text='suppp')
+    receivedMsg = update.message.text.encode('utf-8').decode()
+    response = ''
+    if receivedMsg == '/start':
+        response = defaultMessage
+    elif receivedMsg == '/attendance':
+        response = getAttendance()
+    else:
+        response = defaultMessage
+    bot.sendMessage(chat_id=chatID, text=response)
 
     return 'ok'
 
