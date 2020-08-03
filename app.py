@@ -11,7 +11,7 @@ bot = telegram.Bot(token=TOKEN)
 defaultMessage = ''' 
 Hi, I'm monday
 Here are my commands:
-/attendance - to list all the attendance of all subjects
+/attendance - to list attendance of all subjects
 /today - to show today's classes and their attendance
 '''
 
@@ -26,6 +26,7 @@ def respond():
 
     receivedMsg = update.message.text.encode('utf-8').decode()
     response = ''
+    bot.sendChatAction(chatID, telegram.ChatAction.TYPING)
     if receivedMsg == '/start':
         response = defaultMessage
     elif receivedMsg == '/attendance':
