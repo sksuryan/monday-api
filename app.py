@@ -1,5 +1,5 @@
 import os
-from results.amizone import getAttendance
+from results.amizone import getAttendance, getToday
 from flask import Flask, request, jsonify
 import telegram
 
@@ -31,6 +31,8 @@ def respond():
         response = defaultMessage
     elif receivedMsg == '/attendance':
         response = getAttendance()
+    elif receivedMsg == '/today':
+        response = getToday()
     else:
         response = defaultMessage
     bot.sendMessage(chat_id=chatID, text=response)

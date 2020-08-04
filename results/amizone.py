@@ -3,6 +3,7 @@ import json
 import datetime
 import os
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 #initializing session object
 session = requests.Session()
@@ -98,5 +99,39 @@ def getAttendance():
                     subjects[subjectCode] = subject
     return message
 
-def today():
-    pass
+def getToday():
+    #post request url of showing courses
+    today = datetime.now().strftime('%Y-%m-%d')
+    requestURL = f'https://student.amizone.net/Calendar/home/GetDiaryEvents?start={today}&end={today}'
+    message = ''
+    print(1)
+    #post request for getting data
+    try: 
+        newData = session.get(requestURL,headers=
+            {
+                'Referer': formURL, 
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0'
+            },
+            timeout = (20,60)
+        )
+        if newData.history:
+            res = login()
+            if res == 200:
+                return getToday()
+            else:
+                return res
+    except:
+        return 'Session timeout.'
+    else:
+        classes = json.loads(newData.text)
+        for Class in classes:
+            attendance = ''
+            AttndColor = Class["AttndColor"]
+            if AttndColor == '#3a87ad':
+                attendance = '⏰ Not marked'
+            elif AttndColor == '#4FCC4F':
+                attendance = '✅ Present'
+            else:
+                attendance = '❌ Absent'
+            message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nEnds at: {Class["end"]}\nFaculty: {Class["FacultyName"]}\nRoom No.: {Class["RoomNo"]}\nAttendance: {attendance}\n\n'
+        return message
