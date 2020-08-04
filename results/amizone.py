@@ -20,7 +20,7 @@ def login():
   try:
     data = session.get(formURL, timeout = 30)
   except:
-    print('Session timeout or Amizone is down')
+    return 'Session timeout or Amizone is down'
   else:
     soup = BeautifulSoup(data.text, 'html.parser')
     #scraping the verification token required for login
@@ -57,10 +57,13 @@ def getAttendance():
             timeout = (20,60)
         )
         if newData.history:
-            login()
-            return getAttendance()
+            res = login()
+            if res == 200:
+                return getAttendance()
+            else:
+                return res
     except:
-        print('Session timeout.')
+        return 'Session timeout.'
     else:
         #parsing the loaded page
         soup = BeautifulSoup(newData.text, 'html.parser')
@@ -96,4 +99,4 @@ def getAttendance():
     return message
 
 def today():
-  pass
+    pass
