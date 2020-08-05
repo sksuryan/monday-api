@@ -99,12 +99,10 @@ def getAttendance():
                     subjects[subjectCode] = subject
     return message
 
-def getToday():
+def loadClasses():
     #post request url of showing courses
     today = datetime.now().strftime('%Y-%m-%d')
     requestURL = f'https://student.amizone.net/Calendar/home/GetDiaryEvents?start={today}&end={today}'
-    message = ''
-    print(1)
     #post request for getting data
     try: 
         newData = session.get(requestURL,headers=
@@ -123,15 +121,34 @@ def getToday():
     except:
         return 'Session timeout.'
     else:
-        classes = json.loads(newData.text)
-        for Class in classes:
-            attendance = ''
-            AttndColor = Class["AttndColor"]
-            if AttndColor == '#3a87ad':
-                attendance = '⏰ Not marked'
-            elif AttndColor == '#4FCC4F':
-                attendance = '✅ Present'
-            else:
-                attendance = '❌ Absent'
-            message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nEnds at: {Class["end"]}\nFaculty: {Class["FacultyName"]}\nRoom No.: {Class["RoomNo"]}\nAttendance: {attendance}\n\n'
-        return message
+        return json.loads(newData.text)
+
+def getToday():
+    classes = loadClasses()
+    message = ''
+    for Class in classes:
+        attendance = ''
+        AttndColor = Class["AttndColor"]
+        if AttndColor == '#3a87ad':
+            attendance = '⏰ Not marked'
+        elif AttndColor == '#4FCC4F':
+            attendance = '✅ Present'
+        else:
+            attendance = '❌ Absent'
+        message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nEnds at: {Class["end"]}\nFaculty: {Class["FacultyName"]}\nRoom No.: {Class["RoomNo"]}\nAttendance: {attendance}\n\n'
+    return message
+
+def getAttendanceForToday():
+    classes = loadClasses()
+    message = ''
+    for Class in classes:
+        attendance = ''
+        AttndColor = Class["AttndColor"]
+        if AttndColor == '#3a87ad':
+            attendance = '⏰ Not marked'
+        elif AttndColor == '#4FCC4F':
+            attendance = '✅ Present'
+        else:
+            attendance = '❌ Absent'
+        message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nAttendance: {attendance}\n\n'
+    return message

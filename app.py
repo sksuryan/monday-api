@@ -1,5 +1,5 @@
 import os
-from results.amizone import getAttendance, getToday
+from results.amizone import getAttendance, getToday, getAttendanceForToday
 from flask import Flask, request, jsonify
 import telegram
 
@@ -13,6 +13,7 @@ Hi, I'm monday
 Here are my commands:
 /attendance - to list attendance of all subjects
 /today - to show today's classes and their attendance
+/attendanceForToday - show attendance for today's classes
 '''
 
 @app.route('/')
@@ -24,6 +25,8 @@ def respond():
     update = telegram.Update.de_json(request.get_json(),bot)
     chatID = update.message.chat.id
 
+    print(chatID)
+
     receivedMsg = update.message.text.encode('utf-8').decode()
     response = ''
     bot.sendChatAction(chatID, telegram.ChatAction.TYPING)
@@ -33,6 +36,8 @@ def respond():
         response = getAttendance()
     elif receivedMsg == '/today':
         response = getToday()
+    elif receivedMsg == '/attendanceForToday':
+        response = getAttendanceForToday()
     else:
         response = defaultMessage
     bot.sendMessage(chat_id=chatID, text=response)
