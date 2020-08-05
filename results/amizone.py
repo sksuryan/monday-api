@@ -115,40 +115,47 @@ def loadClasses():
         if newData.history:
             res = login()
             if res == 200:
-                return getToday()
+                return loadClasses()
             else:
-                return res
+                return []
     except:
-        return 'Session timeout.'
+        print('Session timeout.')
+        return []
     else:
         return json.loads(newData.text)
 
 def getToday():
     classes = loadClasses()
     message = ''
-    for Class in classes:
-        attendance = ''
-        AttndColor = Class["AttndColor"]
-        if AttndColor == '#3a87ad':
-            attendance = '⏰ Not marked'
-        elif AttndColor == '#4FCC4F':
-            attendance = '✅ Present'
-        else:
-            attendance = '❌ Absent'
-        message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nEnds at: {Class["end"]}\nFaculty: {Class["FacultyName"]}\nRoom No.: {Class["RoomNo"]}\nAttendance: {attendance}\n\n'
+    if not len(classes):
+        message = 'Server timeout.'
+    else:
+        for Class in classes:
+            attendance = ''
+            AttndColor = Class["AttndColor"]
+            if AttndColor == '#3a87ad':
+                attendance = '⏰ Not marked'
+            elif AttndColor == '#4FCC4F':
+                attendance = '✅ Present'
+            else:
+                attendance = '❌ Absent'
+            message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nEnds at: {Class["end"]}\nFaculty: {Class["FacultyName"]}\nRoom No.: {Class["RoomNo"]}\nAttendance: {attendance}\n\n'
     return message
 
 def getAttendanceForToday():
     classes = loadClasses()
     message = ''
-    for Class in classes:
-        attendance = ''
-        AttndColor = Class["AttndColor"]
-        if AttndColor == '#3a87ad':
-            attendance = '⏰ Not marked'
-        elif AttndColor == '#4FCC4F':
-            attendance = '✅ Present'
-        else:
-            attendance = '❌ Absent'
-        message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nAttendance: {attendance}\n\n'
+    if not len(classes):
+        message = 'Server timeout.'
+    else:
+        for Class in classes:
+            attendance = ''
+            AttndColor = Class["AttndColor"]
+            if AttndColor == '#3a87ad':
+                attendance = '⏰ Not marked'
+            elif AttndColor == '#4FCC4F':
+                attendance = '✅ Present'
+            else:
+                attendance = '❌ Absent'
+            message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nAttendance: {attendance}\n\n'
     return message
