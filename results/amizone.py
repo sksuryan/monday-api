@@ -73,7 +73,6 @@ def getAttendance():
             subjectName = elt.find('td', attrs={'data-title': 'Course Name'})
             subjectCode = elt.find('td', attrs={'data-title': 'Course Code'})
             subjectAttendance = elt.find('td', attrs={'data-title': 'Attendance'})
-            lastUpdated = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
             totalClasses = 0
             totalAttended = 0
 
@@ -85,18 +84,18 @@ def getAttendance():
                     subjectAttendance = subjectAttendance.button.text.strip()
                     message += f'{subjectName} - {subjectAttendance}\n'
                     pos = None
-                    for i in range(len(subjectAttendance)):
-                        if subjectAttendance[i] == ' ':
-                            pos = i
-                            break
-                    numbers = subjectAttendance[:pos].split('/')
-                    totalClasses = int(numbers[1])
-                    totalAttended = int(numbers[0])
-                    subject = {}
-                    for var in ['subjectName', 'subjectCode', 'totalClasses', 'totalAttended', 'lastUpdated']:
-                        subject[var] = eval(var)
+                    # for i in range(len(subjectAttendance)):
+                    #     if subjectAttendance[i] == ' ':
+                    #         pos = i
+                    #         break
+                    # numbers = subjectAttendance[:pos].split('/')
+                    # totalClasses = int(numbers[1])
+                    # totalAttended = int(numbers[0])
+                    # subject = {}
+                    # for var in ['subjectName', 'subjectCode', 'totalClasses', 'totalAttended']:
+                    #     subject[var] = eval(var)
 
-                    subjects[subjectCode] = subject
+                    # subjects[subjectCode] = subject
     return message
 
 def loadClasses():
@@ -117,45 +116,50 @@ def loadClasses():
             if res == 200:
                 return loadClasses()
             else:
-                return []
+                return 'Session timeout.'
     except:
-        print('Session timeout.')
-        return []
+        return 'Session timeout.'
     else:
         return json.loads(newData.text)
 
 def getToday():
     classes = loadClasses()
     message = ''
-    if not len(classes):
-        message = 'Server timeout.'
+    if type(classes) is str:
+        message = classes
     else:
-        for Class in classes:
-            attendance = ''
-            AttndColor = Class["AttndColor"]
-            if AttndColor == '#3a87ad':
-                attendance = '⏰ Not marked'
-            elif AttndColor == '#4FCC4F':
-                attendance = '✅ Present'
-            else:
-                attendance = '❌ Absent'
-            message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nEnds at: {Class["end"]}\nFaculty: {Class["FacultyName"]}\nRoom No.: {Class["RoomNo"]}\nAttendance: {attendance}\n\n'
+        if len(classes) > 0:
+            for Class in classes:
+                attendance = ''
+                AttndColor = Class["AttndColor"]
+                if AttndColor == '#3a87ad':
+                    attendance = '⏰ Not marked'
+                elif AttndColor == '#4FCC4F':
+                    attendance = '✅ Present'
+                else:
+                    attendance = '❌ Absent'
+                message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nEnds at: {Class["end"]}\nFaculty: {Class["FacultyName"]}\nRoom No.: {Class["RoomNo"]}\nAttendance: {attendance}\n\n'
+        else:
+            message = 'No classes today.'
     return message
 
 def getAttendanceForToday():
     classes = loadClasses()
     message = ''
-    if not len(classes):
-        message = 'Server timeout.'
+    if type(classes) is str:
+        message = classes
     else:
-        for Class in classes:
-            attendance = ''
-            AttndColor = Class["AttndColor"]
-            if AttndColor == '#3a87ad':
-                attendance = '⏰ Not marked'
-            elif AttndColor == '#4FCC4F':
-                attendance = '✅ Present'
-            else:
-                attendance = '❌ Absent'
-            message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nAttendance: {attendance}\n\n'
+        if len(classes) > 0:
+            for Class in classes:
+                attendance = ''
+                AttndColor = Class["AttndColor"]
+                if AttndColor == '#3a87ad':
+                    attendance = '⏰ Not marked'
+                elif AttndColor == '#4FCC4F':
+                    attendance = '✅ Present'
+                else:
+                    attendance = '❌ Absent'
+                message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nAttendance: {attendance}\n\n'
+        else:
+            message = 'No classes today.'
     return message

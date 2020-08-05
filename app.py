@@ -5,6 +5,7 @@ import telegram
 
 app = Flask(__name__)
 TOKEN = os.environ.get('TOKEN')
+AUTORES=os.environ.get('AUTORES')
 
 bot = telegram.Bot(token=TOKEN)
 
@@ -24,22 +25,42 @@ def default():
 def respond():
     update = telegram.Update.de_json(request.get_json(),bot)
     chatID = update.message.chat.id
-
-    print(chatID)
+    reqdChatID = int(os.environ.get('CHATID'))
 
     receivedMsg = update.message.text.encode('utf-8').decode()
     response = ''
     bot.sendChatAction(chatID, telegram.ChatAction.TYPING)
-    if receivedMsg == '/start':
-        response = defaultMessage
-    elif receivedMsg == '/attendance':
-        response = getAttendance()
-    elif receivedMsg == '/today':
-        response = getToday()
-    elif receivedMsg == '/attendanceForToday':
-        response = getAttendanceForToday()
+
+    if reqdChatID != chatID:
+        response = f'Sorry, monday is for personal use 😅'
     else:
-        response = defaultMessage
+        if receivedMsg == '/start':
+            response = defaultMessage
+        elif receivedMsg == '/attendance':
+            response = getAttendance()
+        elif receivedMsg == '/today':
+            response = getToday()
+        elif receivedMsg == '/attendanceForToday':
+            response = getAttendanceForToday()
+        else:
+            response = defaultMessage
+
+    bot.sendMessage(chat_id=chatID, text=response)
+
+    return 'ok'
+
+@app.route('/{}'.format(AUTORES))
+def autores():
+    method = request.args.get('method')
+    chatID = os.environ.get('CHATID')
+    response = ''
+    if method == 'attendance':
+        response = getAttendance()
+    elif method == 'today':
+        response = getToday()
+    elif method == 'attendanceForToday':
+        response = getAttendanceForToday()
+
     bot.sendMessage(chat_id=chatID, text=response)
 
     return 'ok'
