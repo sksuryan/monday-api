@@ -1,5 +1,5 @@
 # monday-api 👷‍♂
-api for Telegram Bot that automates attendance for Amitians.
+API for Telegram Bot that automates attendance for Amitians.
 
 ## Endpoints 🛠
 ```/<TELEGRAM BOT TOKEN>``` - is set up as a webhook, and replies to messages sent to the Telegram Bot.
@@ -10,7 +10,7 @@ api for Telegram Bot that automates attendance for Amitians.
 * attendanceForToday - to get today's attendance
 * today - to get today's classes
 
-```/setwebbook``` - is called only once to set the webhook for Telegram Bot
+```/setwebbook?name=<Name of your heroku project>``` - is called only once to set the webhook for Telegram Bot
 
 ## Environmental Variables 🤔
 * TOKEN - Telegram Bot token
@@ -19,10 +19,10 @@ api for Telegram Bot that automates attendance for Amitians.
 * PASSWORD - Amizone password
 * CHATID - Telegram chat ID 
 
-## setting up the Bot asap 🐇
+## Setting up the Bot asap 🐇
 1. Create a telegram bot using BotFather. Check intructions [here](https://www.process.st/telegram-bot/).
 2. Keep the TOKEN given by BotFather, you'll need it later.
-3. Start the telegram bot and go to the URL given below to get your Chat ID, you'll need it too.
+3. Start the telegram bot (send any message to the bot) and go to the URL given below to get your Chat ID(it will be corresponding to "id" key, don't confuse it with "update_id" or "message_id"), you'll need it too.
 ```
 https://api.telegram.org/bot<YourBOTToken>/getUpdates
 ```
@@ -31,7 +31,7 @@ https://api.telegram.org/bot<YourBOTToken>/getUpdates
 6. Set up all the environmental variable by going into project settings.
 7. Go to the URL given below, to make your Chat bot work.
 ```
-https://<your heroku url>/setwebhook
+https://<your heroku url>/setwebhook?name=<name of your heroku project>
 ```
 8. Create an account on [cron-job.org](https://cron-job.org) and create Cron Jobs according to your requirements. Use the second endpoint as request URL and add method as query. 
 
