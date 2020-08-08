@@ -65,5 +65,18 @@ def autores():
 
     return 'ok'
 
+@app.route('/setwebhook', methods=['GET', 'POST'])
+def set_webhook():
+    bot = telegram.Bot(token=os.environ.get('TOKEN'))
+    URL = f'https://{request.args.get("name")}.herokuapp.com/'
+    # we use the bot object to link the bot to our app which live
+    # in the link provided by URL
+    s = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=os.environ.get('TOKEN')))
+    # something to let us know things work
+    if s:
+        return "webhook setup ok"
+    else:
+        return "webhook setup failed"
+
 if __name__ == '__main__':
     app.run()
