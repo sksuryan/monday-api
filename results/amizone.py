@@ -46,11 +46,11 @@ def login():
 
 def getAttendance():
     #post request url of showing courses
-    requestURL = 'https://student.amizone.net/Academics/MyCourses/CourseListSemWise'
+    requestURL = 'https://student.amizone.net/Academics/MyCourses'
     message = ''
     #post request for getting data
     try: 
-        newData = session.post(requestURL,data = {'sem': '5'},headers=
+        newData = session.get(requestURL,headers=
             {
                 'Referer': formURL, 
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0'
