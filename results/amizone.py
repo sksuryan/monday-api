@@ -1,9 +1,7 @@
 import requests
 import json
-import datetime
 import os
 from bs4 import BeautifulSoup
-from datetime import datetime
 
 #initializing session object
 session = requests.Session()
@@ -98,10 +96,10 @@ def getAttendance():
                     # subjects[subjectCode] = subject
     return message
 
-def loadClasses():
+def loadClasses(date):
     #post request url of showing courses
-    today = datetime.now().strftime('%Y-%m-%d')
-    requestURL = f'https://student.amizone.net/Calendar/home/GetDiaryEvents?start={today}&end={today}'
+    #today = datetime.now().strftime('%Y-%m-%d')
+    requestURL = f'https://student.amizone.net/Calendar/home/GetDiaryEvents?start={date}&end={date}'
     #post request for getting data
     try: 
         newData = session.get(requestURL,headers=
@@ -114,16 +112,17 @@ def loadClasses():
         if newData.history:
             res = login()
             if res == 200:
-                return loadClasses()
+                return loadClasses(date)
             else:
                 return 'Session timeout.'
-    except:
+    except Exception as e:
+        print(e)
         return 'Session timeout.'
     else:
         return json.loads(newData.text)
 
-def getToday():
-    classes = loadClasses()
+def getDay(date):
+    classes = loadClasses(date)
     message = ''
     if type(classes) is str:
         message = classes
@@ -138,13 +137,13 @@ def getToday():
                     attendance = '✅ Present'
                 else:
                     attendance = '❌ Absent'
-                message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nEnds at: {Class["end"]}\nFaculty: {Class["FacultyName"]}\nRoom No.: {Class["RoomNo"]}\nAttendance: {attendance}\n\n'
+                message += f'Subject: {Class["title"]}\nSubject Code: {Class["CourseCode"]}\nStarts at: {Class["start"]}\nEnds at: {Class["end"]}\nFaculty: {Class["FacultyName"]}\nRoom No.: {Class["RoomNo"]}\nAttendance: {attendance}\n\n'
         else:
             message = 'No classes today.'
     return message
 
-def getAttendanceForToday():
-    classes = loadClasses()
+def getAttendanceForDay(date):
+    classes = loadClasses(date)
     message = ''
     if type(classes) is str:
         message = classes
@@ -159,7 +158,7 @@ def getAttendanceForToday():
                     attendance = '✅ Present'
                 else:
                     attendance = '❌ Absent'
-                message += f'Subject: {Class["title"]}\nStarts at: {Class["start"]}\nAttendance: {attendance}\n\n'
+                message += f'Subject: {Class["title"]}\nSubject Code: {Class["CourseCode"]}\nStarts at: {Class["start"]}\nAttendance: {attendance}\n\n'
         else:
             message = 'No classes today.'
     return message

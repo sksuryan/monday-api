@@ -1,9 +1,6 @@
-/bin
-/include
-/lib
-/lib64
-/share
-/.vscode
-/__pycache__
+/env
 .env
+/__pycache__
 /results/__pycache__
+lib64
+.vscode

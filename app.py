@@ -1,7 +1,9 @@
-import os
-from results.amizone import getAttendance, getToday, getAttendanceForToday
+from results.amizone import getAttendance, getDay, getAttendanceForDay
 from flask import Flask, request, jsonify
 import telegram
+import datetime
+import os
+
 
 app = Flask(__name__)
 TOKEN = os.environ.get('TOKEN')
@@ -31,6 +33,8 @@ def respond():
     response = ''
     bot.sendChatAction(chatID, telegram.ChatAction.TYPING)
 
+    date = datetime.date.today()
+
     if reqdChatID != chatID:
         response = f'Sorry, monday is for personal use 😅'
     else:
@@ -39,9 +43,19 @@ def respond():
         elif receivedMsg == '/attendance':
             response = getAttendance()
         elif receivedMsg == '/today':
-            response = getToday()
+            date = date.strftime('%Y-%m-%d')
+            response = getDay(date)
         elif receivedMsg == '/attendanceForToday':
-            response = getAttendanceForToday()
+            date = date.strftime('%Y-%m-%d')
+            response = getAttendanceForDay(date)
+        elif receivedMsg == '/yesterday':
+            date = date - datetime.timedelta(days=1)
+            date = date.strftime('%Y-%m-%d')
+            response = getAttendanceForDay(date)
+        elif receivedMsg == '/tomorrow':
+            date = date + datetime.timedelta(days=1)
+            date = date.strftime('%Y-%m-%d')
+            response = getDay(date)
         else:
             response = defaultMessage
 
@@ -54,12 +68,25 @@ def autores():
     method = request.args.get('method')
     chatID = os.environ.get('CHATID')
     response = ''
+
+    date = datetime.date.today()
+
     if method == 'attendance':
         response = getAttendance()
     elif method == 'today':
-        response = getToday()
+        date = date.strftime('%Y-%m-%d')
+        response = getDay(date)
     elif method == 'attendanceForToday':
-        response = getAttendanceForToday()
+        date = date.strftime('%Y-%m-%d')
+        response = getAttendanceForDay(date)
+    elif method == 'tomorrow':
+        date = date + datetime.timedelta(days=1)
+        date = date.strftime('%Y-%m-%d')
+        response = getDay(date)
+    elif method == 'yesterday':
+        date = date - datetime.timedelta(days=1)
+        date = date.strftime('%Y-%m-%d')
+        response = getAttendanceForDay(date)
 
     bot.sendMessage(chat_id=chatID, text=response)
 
