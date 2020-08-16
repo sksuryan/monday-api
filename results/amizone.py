@@ -12,7 +12,7 @@ subjects = {}
 #main url of the site
 formURL = 'https://student.amizone.net/'
 #post request login url
-url = 'https://student.amizone.net/Login/Login'
+url = 'https://student.amizone.net/'
 
 def login():
   #initial get request to site to get required cookies
