@@ -10,9 +10,9 @@ session = requests.Session()
 subjects = {}
 
 #main url of the site
-formURL = 'https://student.amizone.net/'
+formURL = 'https://s.amizone.net/'
 #post request login url
-url = 'https://student.amizone.net/'
+url = 'https://s.amizone.net/'
 
 def login():
   #initial get request to site to get required cookies
@@ -44,7 +44,7 @@ def login():
 
 def getAttendance():
     #post request url of showing courses
-    requestURL = 'https://student.amizone.net/Academics/MyCourses'
+    requestURL = 'https://s.amizone.net/Academics/MyCourses'
     message = ''
     #post request for getting data
     try: 
@@ -71,8 +71,6 @@ def getAttendance():
             subjectName = elt.find('td', attrs={'data-title': 'Course Name'})
             subjectCode = elt.find('td', attrs={'data-title': 'Course Code'})
             subjectAttendance = elt.find('td', attrs={'data-title': 'Attendance'})
-            totalClasses = 0
-            totalAttended = 0
 
             if subjectName is not None:
                 subjectName = subjectName.text.strip()
@@ -82,24 +80,12 @@ def getAttendance():
                     subjectAttendance = subjectAttendance.button.text.strip()
                     message += f'{subjectName} - {subjectAttendance}\n'
                     pos = None
-                    # for i in range(len(subjectAttendance)):
-                    #     if subjectAttendance[i] == ' ':
-                    #         pos = i
-                    #         break
-                    # numbers = subjectAttendance[:pos].split('/')
-                    # totalClasses = int(numbers[1])
-                    # totalAttended = int(numbers[0])
-                    # subject = {}
-                    # for var in ['subjectName', 'subjectCode', 'totalClasses', 'totalAttended']:
-                    #     subject[var] = eval(var)
-
-                    # subjects[subjectCode] = subject
     return message
 
 def loadClasses(date):
     #post request url of showing courses
     #today = datetime.now().strftime('%Y-%m-%d')
-    requestURL = f'https://student.amizone.net/Calendar/home/GetDiaryEvents?start={date}&end={date}'
+    requestURL = f'https://s.amizone.net/Calendar/home/GetDiaryEvents?start={date}&end={date}'
     #post request for getting data
     try: 
         newData = session.get(requestURL,headers=
